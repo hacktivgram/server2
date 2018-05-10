@@ -88,11 +88,13 @@ module.exports = {
   },
   update: (req, res) => {
     User.update({
-        _id: req.params.id
+        _id: req.user.userId
       }, {
         $set: {
+          username: req.body.username,
           email: req.body.email,
-          password: req.body.password
+          password: req.body.password,
+          biography: req.body.biography
         }
       }, {
         runValidators: true,
@@ -119,8 +121,7 @@ module.exports = {
       .exec()
       .then(user => {
         res.status(200).json({
-          message: "user deleted",
-          data: user
+          message: "user deleted"
         })
       })
       .catch(err => {
@@ -131,8 +132,9 @@ module.exports = {
       })
   },
   logout: (req, res) => {
+    req.headers.token = ''
     res.status(200).json({
-      message: 'server is connected'
+      message: 'logout success'
     })
   },
 
