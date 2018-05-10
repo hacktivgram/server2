@@ -15,7 +15,7 @@ const {
   addLike,
   deletePhoto
 }             = require('../controllers/photo.controller.js');
-const isLogin = require('../middlewares/auth');
+const { isLogin } = require('../middlewares/auth');
 const images  = require('../middlewares/uploadImage');
 
 

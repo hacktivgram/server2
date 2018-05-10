@@ -20,7 +20,7 @@ module.exports = {
       } else {
         res.status(200).json({
           message: "user successfully created",
-          user
+          data: user
         })
       }
     })
@@ -29,24 +29,23 @@ module.exports = {
     User.findOne({
         email: req.body.email
       })
-      .then(user => {
+      .then(function(user) {
         if(bcrypt.compareSync(req.body.password, user.password)) {
-          let token = jwt.sign({
-            id: user._id,
-            email: user.email,
-          }, secret)
+          let token = jwt.sign({userId: user._id, userEmail: user.email}, `${secret}`)
           res.status(200).json({
-            message: 'sign in success',
-            token
+            message: 'log in success',
+            token: token
           })
         } else {
           res.status(404).json({
-            message: 'user not found'
+            message: 'wrong password'
           })
         }
       })
       .catch(err => {
-        res.status(404).send(err)
+        res.status(404).json({
+          message: 'user not found'
+        })
       })
   },
   getAllUsers: function (req, res) {
@@ -54,13 +53,13 @@ module.exports = {
       .then((users) => {
         res.status(200).json({
           message: "user information retrieved",
-          users
+          data: users
         })
       })
       .catch(err => {
         res.status(400).json({
           message: "failed to retrieve data",
-          err
+          error: err
         })
       })
   },
@@ -71,18 +70,17 @@ module.exports = {
       .then((user) => {
         if(user === null) {
           res.status(400).json({
-            message: 'user not found',
-            err
+            message: 'user not found'
           })
         } else {
           res.status(200).json({
               message: "user information found",
-              users
+              data: user
             })
             .catch((err) => {
               res.status(400).json({
                 message: "failed to retrieve data",
-                err
+                error: err
               })
             })
         }
@@ -105,13 +103,13 @@ module.exports = {
       .then(user => {
         res.status(200).json({
           message: "user fields have been updated",
-          user
+          data: user
         })
       })
       .catch(err => {
         res.status(400).json({
           message: "failed to update user data",
-          err
+          error: err
         })
       })
   },
@@ -123,13 +121,13 @@ module.exports = {
       .then(user => {
         res.status(200).json({
           message: "user deleted",
-          user
+          data: user
         })
       })
       .catch(err => {
         res.status(400).json({
           message: "failed to delete user record",
-          err
+          error: err
         })
       })
   },
