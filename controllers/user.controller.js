@@ -1,6 +1,6 @@
 require('dotenv').config();
 const User   = require('../models/user.model');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt    = require('jsonwebtoken');
 const secret = process.env.SECRET_KEY;
 
@@ -94,7 +94,8 @@ module.exports = {
       }, {
         $set: {
           email: req.body.email,
-          password: req.body.password
+          password: req.body.password,
+          biography: req.body.biography
         }
       }, {
         runValidators: true,
