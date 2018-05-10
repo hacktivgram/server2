@@ -65,7 +65,7 @@ module.exports = {
   },
   getUserInfo: function (req, res) {
     User.findOne({
-        _id: req.decoded.id
+        _id: req.user.userId
       })
       .then((user) => {
         if(user === null) {
@@ -77,13 +77,13 @@ module.exports = {
               message: "user information found",
               data: user
             })
-            .catch((err) => {
-              res.status(400).json({
-                message: "failed to retrieve data",
-                error: err
-              })
-            })
         }
+      })
+      .catch((err) => {
+        res.status(400).json({
+          message: "failed to retrieve data",
+          error: err
+        })
       })
   },
   update: (req, res) => {
