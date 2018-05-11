@@ -13,8 +13,9 @@ module.exports = {
           })
         }
         let newPhoto = {
+          user: req.user.userId,
           image: req.file.cloudStoragePublicUrl,
-          caption: req.body.caption,
+          caption: req.body.caption
         }
         let photo = new Photo(newPhoto)
         photo.save()
@@ -38,20 +39,39 @@ module.exports = {
       })
   },
   getPhoto: function (req, res) {
-    Photo.find()
-      .populate('user')
-      .exec()
-      .then((response) => {
+    Photo.find({
+      user: req.user.userId
+    })
+    .populate('user')
+    .then(response => {
+      response.forEach(img =>{
         res.status(200).json({
-            message: 'success get all items data',
-            photo: response
-          })
-          .catch((err) => {
-            res.status(500).json({
-              err
-            });
-          });
-      });
+          message: 'success get all items data',
+          photo: img.image
+        })
+      })
+      
+    })
+    .catch((err) => {
+      res.status(500).json({
+        error: err
+      })
+    })
+  },
+  getAllPhoto: function (req, res) {
+    Photo.find()
+    .populate('user')
+    .then(response => {
+      res.status(200).json({
+        message: 'success get all items data',
+        photo: response
+      })    
+    })
+    .catch((err) => {
+      res.status(500).json({
+        error: err
+      })
+    })
   },
   addComment: function (req, res) {
     Photo.update({
