@@ -1,20 +1,18 @@
 const mongoose    = require('mongoose')
 const Schema      = mongoose.Schema
 
-const photoSchema = new mongoose.Schema({
-  user: {
+const commentSchema = new mongoose.Schema({
+  userId: {
     type: Schema.Types.ObjectId,
     ref: "User"
   },
-  image: {
+  photoId: {
+    type: Schema.Types.ObjectId,
+    ref: "Photo"
+  },
+  comment: {
     type: String
   },
-  caption: {
-    type: String
-  },
-  like: [{
-    type: String
-  }],
   created_at: {
     type: Date,
     default: new Date()
@@ -24,7 +22,7 @@ const photoSchema = new mongoose.Schema({
   timestamps: true
 })
 
-photoSchema.pre('update', function () {
+commentSchema.pre('update', function () {
   this.updated_at({}, {
     $set: {
       updated_at: new Date()
@@ -32,4 +30,4 @@ photoSchema.pre('update', function () {
   })
 })
 
-module.exports = mongoose.model('photos', photoSchema)
+module.exports = mongoose.model('comments', commentSchema)

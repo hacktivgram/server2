@@ -1,8 +1,8 @@
 require('dotenv').config();
-const User   = require('../models/user.model');
-const bcrypt = require('bcryptjs');
-const jwt    = require('jsonwebtoken');
-const secret = process.env.SECRET_KEY;
+const User     = require('../models/user.model');
+const bcrypt   = require('bcrypt');
+const jwt      = require('jsonwebtoken');
+const secret   = process.env.SECRET_KEY;
 
 module.exports = {
   signup: (req, res) => {
@@ -65,7 +65,7 @@ module.exports = {
   },
   getUserInfo: function (req, res) {
     User.findOne({
-        _id: req.decoded.id
+        _id: req.user.userId
       })
       .then((user) => {
         if(user === null) {
@@ -77,20 +77,21 @@ module.exports = {
               message: "user information found",
               data: user
             })
-            .catch((err) => {
-              res.status(400).json({
-                message: "failed to retrieve data",
-                error: err
-              })
-            })
         }
+      })
+      .catch((err) => {
+        res.status(400).json({
+          message: "failed to retrieve data",
+          error: err
+        })
       })
   },
   update: (req, res) => {
     User.update({
-        _id: req.params.id
+        _id: req.user.userId
       }, {
         $set: {
+          username: req.body.username,
           email: req.body.email,
           password: req.body.password,
           biography: req.body.biography
@@ -120,8 +121,7 @@ module.exports = {
       .exec()
       .then(user => {
         res.status(200).json({
-          message: "user deleted",
-          data: user
+          message: "user deleted"
         })
       })
       .catch(err => {
@@ -130,12 +130,5 @@ module.exports = {
           error: err
         })
       })
-  },
-  logout: (req, res) => {
-    res.status(200).json({
-      message: 'server is connected'
-    })
-  },
-
-
+  }
 }
