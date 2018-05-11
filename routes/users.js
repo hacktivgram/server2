@@ -6,10 +6,15 @@ const {
   update,
   signup,
   getAllUsers,
-  destroy
-}                 = require('../controllers/user.controller.js');
+  destroy,
+  logout,
+  usernameValidate,
+  emailValidate
+}             = require('../controllers/user.controller.js');
 const {
   getPhoto,
+  getAllPhoto,
+  addComment,
   addLike,
   upload,
   deletePhoto
@@ -25,11 +30,14 @@ user
   .post('/login', login)
   .post('/update', isLogin, update)
   .post('/signup', signup)
-  .get('/get-photo', getPhoto)
   .post('/add-comment/:id', isLogin, create)
   .get('/get-all-comment', getComment)
   .get('/get-comment',isLogin, getCommentByUser)
   .post('/add-like/:id',isLogin, addLike)
+  .get('/get-photo', isLogin, getPhoto)
+  .get('/get-all-photo', getAllPhoto)
+  .post('/forusernamevalidate', usernameValidate)
+  .post('/foremailvalidate', emailValidate)
   .post('/upload',
     isLogin,
     images.multer.single('image'),
