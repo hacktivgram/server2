@@ -44,13 +44,14 @@ module.exports = {
     })
     .populate('user')
     .then(response => {
+      let photoArr = []
       response.forEach(img =>{
-        res.status(200).json({
-          message: 'success get all items data',
-          photo: img.image
-        })
+        photoArr.push(img.image)
       })
-      
+      res.status(200).json({
+        message: 'success get all items data',
+        photo: photoArr
+      })
     })
     .catch((err) => {
       res.status(500).json({
