@@ -31,7 +31,7 @@ user
   .post('/foremailvalidate', emailValidate)
   .get('/get-photo', getPhoto)
   .post('/add-comment', addComment)
-  .post('/add-like', addLike)
+  .post('/add-like/:id', addLike)
   .post('/upload',
     isLogin,
     images.multer.single('image'),
@@ -39,7 +39,6 @@ user
     upload)
   .delete('/delete-photo/:id', isLogin, deletePhoto)
   .delete('/delete/:id', isLogin, destroy)
-  .get('/logout', isLogin, logout);
 
 
 module.exports = user
