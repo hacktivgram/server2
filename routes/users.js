@@ -1,5 +1,5 @@
-const express = require('express');
-const user    = express.Router();
+const express     = require('express');
+const user        = express.Router();
 const {
   getUserInfo,
   login,
@@ -18,9 +18,11 @@ const {
   addLike,
   upload,
   deletePhoto
-}             = require('../controllers/photo.controller.js');
+}                 = require('../controllers/photo.controller.js');
+
+const { create, getComment, getCommentByUser }  = require('../controllers/comment.controller.js');
 const { isLogin } = require('../middlewares/auth');
-const images  = require('../middlewares/uploadImage');
+const images      = require('../middlewares/uploadImage');
 
 
 user
@@ -28,11 +30,13 @@ user
   .post('/login', login)
   .post('/update', isLogin, update)
   .post('/signup', signup)
+  .post('/add-comment/:id', isLogin, create)
+  .get('/get-all-comment', getComment)
+  .get('/get-comment',isLogin, getCommentByUser)
   .get('/get-photo', isLogin, getPhoto)
   .get('/get-all-photo', getAllPhoto)
   .post('/forusernamevalidate', usernameValidate)
   .post('/foremailvalidate', emailValidate)
-  .post('/add-comment', addComment)
   .post('/add-like/:id', addLike)
   .post('/upload',
     isLogin,

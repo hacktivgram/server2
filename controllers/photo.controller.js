@@ -74,57 +74,46 @@ module.exports = {
       })
     })
   },
-  addComment: function (req, res) {
-    Photo.update({
-        _id: req.user.userId
-      }, {
-        $set: {
-          comment: req.body.comment
-        }
-      }, {
-        runValidators: true,
-        setDefaultsOnInsert: true
-      })
-      .exec()
-      .then(photo => {
-        res.status(200).json({
-          message: "photo fields have been added comment",
-          photo
-        })
-      })
-      .catch(err => {
-        res.status(400).json({
-          message: "failed to added comment photo",
-          err
-        })
-      })
-  },
   addLike: function (req, res) {
     Photo.findOne({
       _id: req.params.id
     })
     Photo.update({
         _id: req.params.id
-      }, {
-        $set: {
-          like: req.body.like
-        }
-      }, {
-        runValidators: true,
-        setDefaultsOnInsert: true
       })
       .then(photo => {
-        res.status(200).json({
-          message: "photo fields have been added like",
-          photo
-        })
-      })
-      .catch(err => {
+        let likes = photo.like
+        likes.push(req.user.userId)
+        Photo.update({
+            _id: req.params.id
+          }, {
+            $set: {
+              like: likes
+            }
+          }, {
+            runValidators: true,
+            setDefaultsOnInsert: true
+          })
+          .then(photo => {
+            res.status(200).json({
+              message: "photo fields have been added like",
+              userId: req.user.userId,
+              photo
+            })
+          })
+          .catch(err => {
+            res.status(400).json({
+              message: "failed to added like photo",
+              err
+            })
+          })
+      }).catch(err => {
         res.status(400).json({
           message: "failed to added like photo",
           err
         })
       })
+
   },
   deletePhoto: (req, res) => {
     Photo.deleteOne({

@@ -1,8 +1,8 @@
 require('dotenv').config();
-const User   = require('../models/user.model');
-const bcrypt = require('bcrypt');
-const jwt    = require('jsonwebtoken');
-const secret = process.env.SECRET_KEY;
+const User     = require('../models/user.model');
+const bcrypt   = require('bcrypt');
+const jwt      = require('jsonwebtoken');
+const secret   = process.env.SECRET_KEY;
 
 module.exports = {
   signup: (req, res) => {
