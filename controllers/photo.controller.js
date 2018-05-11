@@ -1,18 +1,15 @@
-const User  = require('../models/photo.model');
+const User  = require('../models/user.model');
 const Photo = require('../models/photo.model');
 
 module.exports = {
   upload: function (req, res) {
-    let userId = req.decoded.id
-    User.findOne({
-        _id: userId
-      })
-      .exec()
-      .then((user) => {
-        if(tag == null) {
+    let userId = req.user.userId
+    User.findOne({_id: userId})
+      .then(function(user) {
+        console.log('masuk then')
+        if(user == null) {
           res.status(400).json({
-            message: 'user not found',
-            err
+            message: 'user not found'
           })
         }
         let newPhoto = {
@@ -20,7 +17,7 @@ module.exports = {
           caption: req.body.caption,
         }
         let photo = new Photo(newPhoto)
-        Photo.save()
+        photo.save()
           .then((response) => {
             res.status(200).json({
               message: 'Your file is successfully uploaded',
@@ -28,14 +25,15 @@ module.exports = {
             })
           })
           .catch((err) => {
+            console.log('masuk catch')
             res.status(500).json({
-              err
+              error: err
             })
           })
       })
       .catch((err) => {
         res.status(500).json({
-          err
+          error: err
         })
       })
   },
@@ -57,7 +55,7 @@ module.exports = {
   },
   addComment: function (req, res) {
     Photo.update({
-        _id: req.params.id
+        _id: req.user.userId
       }, {
         $set: {
           comment: req.body.comment
@@ -81,6 +79,9 @@ module.exports = {
       })
   },
   addLike: function (req, res) {
+    Photo.findOne({
+      _id: req.params.id
+    })
     Photo.update({
         _id: req.params.id
       }, {
@@ -91,7 +92,6 @@ module.exports = {
         runValidators: true,
         setDefaultsOnInsert: true
       })
-      .exec()
       .then(photo => {
         res.status(200).json({
           message: "photo fields have been added like",

@@ -130,13 +130,5 @@ module.exports = {
           error: err
         })
       })
-  },
-  logout: (req, res) => {
-    req.headers.token = ''
-    res.status(200).json({
-      message: 'logout success'
-    })
-  },
-
-
+  }
 }
