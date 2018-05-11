@@ -29,7 +29,7 @@ user
   .post('/add-comment/:id', isLogin, create)
   .get('/get-all-comment', getComment)
   .get('/get-comment',isLogin, getCommentByUser)
-  .post('/add-like/:id', addLike)
+  .post('/add-like/:id',isLogin, addLike)
   .post('/upload',
     isLogin,
     images.multer.single('image'),

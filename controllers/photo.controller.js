@@ -1,5 +1,5 @@
-const User     = require('../models/user.model');
-const Photo    = require('../models/photo.model');
+const User = require('../models/user.model');
+const Photo = require('../models/photo.model');
 
 module.exports = {
   upload: function (req, res) {
@@ -55,80 +55,30 @@ module.exports = {
           });
       });
   },
-  addComment: function (req, res) {
-    Photo.findOne({
-        _id: req.user.userId
+  addLike: function (req, res) {
+    let likeArr = []
+    likeArr.push(req.user.userId)
+    Photo.findOneAndUpdate({
+        _id: req.params.id
+      }, {
+        $set: {
+          like: likeArr
+        }
       })
-      .then(photo => {
-        let comments = photo.comment
-        comments.push(req.user.userId)
-        Photo.update({
-            _id: req.user.userId
-          }, {
-            $set: {
-              comment: comments
-            }
-          }, {
-            runValidators: true,
-            setDefaultsOnInsert: true
-          })
-          .exec()
-          .then(photo => {
-            res.status(200).json({
-              message: "photo fields have been added comment",
-              photo
-            })
-          })
-          .catch(err => {
-            res.status(400).json({
-              message: "failed to added comment photo",
-              err
-            })
-          })
-      }).catch(err => {
-        res.status(400).json({
-          message: "failed to added comment photo",
-          err
+      .then(likePhoto => {
+        res.status(200).json({
+          message: "photo fields have been added like",
+          userId: req.user.userId,
+          likePhoto
         })
       })
-  },
-  addLike: function (req, res) {
-    Photo.findOne({
-        _id: req.params.id
-      })
-      .then(photo => {
-        let likes = photo.like
-        likes.push(req.user.userId)
-        Photo.update({
-            _id: req.params.id
-          }, {
-            $set: {
-              like: likes
-            }
-          }, {
-            runValidators: true,
-            setDefaultsOnInsert: true
-          })
-          .then(photo => {
-            res.status(200).json({
-              message: "photo fields have been added like",
-              userId: req.user.userId,
-              photo
-            })
-          })
-          .catch(err => {
-            res.status(400).json({
-              message: "failed to added like photo",
-              err
-            })
-          })
-      }).catch(err => {
+      .catch(err => {
+        console.log('masuk catch');
         res.status(400).json({
           message: "failed to added like photo",
           err
         })
       })
-
   },
   deletePhoto: (req, res) => {
     Photo.deleteOne({
