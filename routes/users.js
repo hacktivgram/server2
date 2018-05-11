@@ -1,9 +1,39 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const user    = express.Router();
+const {
+  getUserInfo,
+  login,
+  update,
+  signup,
+  getAllUsers,
+  destroy
+}             = require('../controllers/user.controller.js');
+const {
+  getPhoto,
+  addComment,
+  addLike,
+  upload,
+  deletePhoto
+}             = require('../controllers/photo.controller.js');
+const { isLogin } = require('../middlewares/auth');
+const images  = require('../middlewares/uploadImage');
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
 
-module.exports = router;
+user
+  .get('/', isLogin, getUserInfo)
+  .post('/login', login)
+  .post('/update', isLogin, update)
+  .post('/signup', signup)
+  .get('/get-photo', getPhoto)
+  .post('/add-comment', addComment)
+  .post('/add-like/:id', addLike)
+  .post('/upload',
+    isLogin,
+    images.multer.single('image'),
+    images.sendUploadToGCS,
+    upload)
+  .delete('/delete-photo/:id', isLogin, deletePhoto)
+  .delete('/delete/:id', isLogin, destroy)
+
+
+module.exports = user
