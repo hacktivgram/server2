@@ -6,7 +6,10 @@ const {
   update,
   signup,
   getAllUsers,
-  destroy
+  destroy,
+  logout,
+  usernameValidate,
+  emailValidate
 }             = require('../controllers/user.controller.js');
 const {
   getPhoto,
@@ -27,6 +30,8 @@ user
   .post('/signup', signup)
   .get('/get-photo', isLogin, getPhoto)
   .get('/get-all-photo', getAllPhoto)
+  .post('/forusernamevalidate', usernameValidate)
+  .post('/foremailvalidate', emailValidate)
   .post('/add-comment', addComment)
   .post('/add-like/:id', addLike)
   .post('/upload',
