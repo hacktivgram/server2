@@ -1,13 +1,11 @@
-const User     = require('../models/user.model');
-const Photo    = require('../models/photo.model');
+const User  = require('../models/user.model');
+const Photo = require('../models/photo.model');
 
 module.exports = {
   upload: function (req, res) {
     let userId = req.user.userId
-    User.findOne({
-        _id: userId
-      })
-      .then(function (user) {
+    User.findOne({_id: userId})
+      .then(function(user) {
         console.log('masuk then')
         if(user == null) {
           res.status(400).json({
@@ -15,8 +13,9 @@ module.exports = {
           })
         }
         let newPhoto = {
+          user: req.user.userId,
           image: req.file.cloudStoragePublicUrl,
-          caption: req.body.caption,
+          caption: req.body.caption
         }
         let photo = new Photo(newPhoto)
         photo.save()
@@ -40,60 +39,46 @@ module.exports = {
       })
   },
   getPhoto: function (req, res) {
-    Photo.find()
-      .populate('user')
-      .exec()
-      .then((response) => {
-        res.status(200).json({
-            message: 'success get all items data',
-            photo: response
-          })
-          .catch((err) => {
-            res.status(500).json({
-              err
-            });
-          });
-      });
+    Photo.find({
+      user: req.user.userId
+    })
+    .populate('user')
+    .then(response => {
+      let photoArr = []
+      response.forEach(img =>{
+        photoArr.push(img.image)
+      })
+      res.status(200).json({
+        message: 'success get all items data',
+        photo: photoArr
+      })
+    })
+    .catch((err) => {
+      res.status(500).json({
+        error: err
+      })
+    })
   },
-  addComment: function (req, res) {
-    Photo.findOne({
-        _id: req.user.userId
+  getAllPhoto: function (req, res) {
+    Photo.find()
+    .populate('user')
+    .then(response => {
+      res.status(200).json({
+        message: 'success get all items data',
+        photo: response
+      })    
+    })
+    .catch((err) => {
+      res.status(500).json({
+        error: err
       })
-      .then(photo => {
-        let comments = photo.comment
-        comments.push(req.user.userId)
-        Photo.update({
-            _id: req.user.userId
-          }, {
-            $set: {
-              comment: comments
-            }
-          }, {
-            runValidators: true,
-            setDefaultsOnInsert: true
-          })
-          .exec()
-          .then(photo => {
-            res.status(200).json({
-              message: "photo fields have been added comment",
-              photo
-            })
-          })
-          .catch(err => {
-            res.status(400).json({
-              message: "failed to added comment photo",
-              err
-            })
-          })
-      }).catch(err => {
-        res.status(400).json({
-          message: "failed to added comment photo",
-          err
-        })
-      })
+    })
   },
   addLike: function (req, res) {
     Photo.findOne({
+      _id: req.params.id
+    })
+    Photo.update({
         _id: req.params.id
       })
       .then(photo => {

@@ -86,6 +86,48 @@ module.exports = {
         })
       })
   },
+  usernameValidate: (req, res) => {
+    User.findOne({
+      username: req.body.username
+    })
+      .then(user => {
+        if (user == undefined) {
+          res.status(200).json({
+            message: 'next'
+          })
+        } else {
+          res.status(400).json({
+            message: 'username is exist'
+          })
+        }
+      })
+      .catch(err => {
+        res.status(500).json({
+          message: 'something went wrong'
+        })
+      })
+  },
+  emailValidate: (req, res) => {
+    User.findOne({
+      email: req.body.email
+    })
+      .then(user => {
+        if (user == undefined) {
+          res.status(200).json({
+            message: 'next'
+          })
+        } else {
+          res.status(400).json({
+            message: 'email is exist'
+          })
+        }
+      })
+      .catch(err => {
+        res.status(500).json({
+          message: 'something went wrong'
+        })
+      })
+  },
   update: (req, res) => {
     User.update({
         _id: req.user.userId
