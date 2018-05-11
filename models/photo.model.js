@@ -4,7 +4,7 @@ const Schema      = mongoose.Schema
 const photoSchema = new mongoose.Schema({
   user: {
     type: Schema.Types.ObjectId,
-    ref: "User"
+    ref: "users"
   },
   image: {
     type: String
@@ -16,7 +16,7 @@ const photoSchema = new mongoose.Schema({
     type: String
   }],
   like: [{
-    type: Number
+    type: String
   }],
   created_at: {
     type: Date,

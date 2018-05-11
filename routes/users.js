@@ -13,6 +13,7 @@ const {
 }             = require('../controllers/user.controller.js');
 const {
   getPhoto,
+  getAllPhoto,
   addComment,
   addLike,
   upload,
@@ -27,9 +28,10 @@ user
   .post('/login', login)
   .post('/update', isLogin, update)
   .post('/signup', signup)
+  .get('/get-photo', isLogin, getPhoto)
+  .get('/get-all-photo', getAllPhoto)
   .post('/forusernamevalidate', usernameValidate)
   .post('/foremailvalidate', emailValidate)
-  .get('/get-photo', getPhoto)
   .post('/add-comment', addComment)
   .post('/add-like/:id', addLike)
   .post('/upload',
